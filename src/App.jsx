@@ -8,10 +8,13 @@ function App() {
   const copyRef = useRef(null);
 
   useEffect(() => {
+    generatePassword();
+  },[length, includeNumbers, includeSymbols]);
+  
+  const copyToClipBoard = () => {
     window.navigator.clipboard.writeText(password);
     copyRef.current.select();
-  },[length, includeNumbers, includeSymbols]);
-
+  }
 
   const generatePassword = useCallback(() => {
     let str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -31,26 +34,6 @@ function App() {
     setPassword(characters);
   }, [length, includeNumbers, includeSymbols])
 
-  const handleLengthChange = (e) => {
-    const value = e.target.value;
-    setLength(value);
-    generatePassword();
-  }
-
-  const onIncludeNumbers = (e) => {
-    const value = e.target.checked;
-    console.log(value);
-    
-    setIncludeNumbers(value);
-    generatePassword();
-  }
-
-  const onIncludeSymbols = (e) => {
-    const value = e.target.checked;
-    
-    setIncludeSymbols(value);
-    generatePassword();
-  }
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -66,7 +49,7 @@ function App() {
             ref={copyRef}
           />
           <button  
-          // onClick={() => {copyToClipBoard}}
+          onClick={copyToClipBoard}
           className="bg-blue-500 py-2 hover:bg-blue-700 text-white font-serif font-bold px-4 rounded-md">
             Copy
           </button>
@@ -84,7 +67,7 @@ function App() {
               className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer"
               name="characterLength"
               id="characterLength"
-              onChange={(e)=>{handleLengthChange(e)}}
+              onChange={(e)=>{Number(setLength(e.target.value))}}
             />
           </div>
         </div>
@@ -95,7 +78,7 @@ function App() {
               className="form-checkbox h-5 w-5 text-blue-500 rounded focus:ring-blue-500 cursor-pointer"
               name="isNumber"
               id="isNumber"
-              onClick={(e)=>{onIncludeNumbers(e)}}
+              onClick={(e)=>{Boolean(setIncludeNumbers(e.target.checked))}}
             />
             <label htmlFor="isNumber" className="block text-gray-700 font-serif text-sm font-bold">
               Number
@@ -107,7 +90,7 @@ function App() {
               className="form-checkbox h-5 w-5 text-blue-500 rounded focus:ring-blue-500 cursor-pointer"
               name="isSymbol"
               id="isSymbol"
-              onClick={(e)=>{onIncludeSymbols(e)}}
+              onClick={(e)=>{Boolean(setIncludeSymbols(e.target.checked))}}
             />
             <label htmlFor="isSymbol" className="block text-gray-700 font-serif text-sm font-bold">
               Symbol
